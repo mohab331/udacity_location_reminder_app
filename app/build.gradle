@@ -60,7 +60,7 @@ dependencies {
     //Navigation dependencies
     implementation 'androidx.appcompat:appcompat:1.5.1'
     implementation "androidx.constraintlayout:constraintlayout:$constraintVersion"
-    implementation "androidx.fragment:fragment-testing:1.5.6"
+    debugImplementation "androidx.fragment:fragment-testing:1.5.6"
     implementation 'androidx.fragment:fragment:1.5.6'
     kapt "androidx.lifecycle:lifecycle-compiler:$archLifecycleVersion"
     implementation "androidx.lifecycle:lifecycle-extensions:$lifecycleVersionExtenstions"
@@ -91,6 +91,7 @@ dependencies {
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesVersion"
     testImplementation "org.robolectric:robolectric:$robolectricVersion"
     testImplementation "com.google.truth:truth:$truthVersion"
+    androidTestImplementation "androidx.test.uiautomator:uiautomator:$uiAutomatorVersion"
     testImplementation "org.mockito:mockito-core:$mockitoVersion"
 
     // AndroidX Test - JVM testing
@@ -125,4 +126,6 @@ dependencies {
 
     //firebase
     implementation 'com.firebaseui:firebase-ui-auth:8.0.2'
+    implementation 'com.google.firebase:firebase-auth-ktx:21.1.0'
+    implementation 'com.google.android.gms:play-services-auth:20.5.0'
 }

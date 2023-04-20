@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.udacity.project4.base.BaseRecyclerViewAdapter
 
 
-
 /**
  * Extension function to setup the RecyclerView
  */

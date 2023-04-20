@@ -11,7 +11,6 @@ import android.content.res.Resources
 import android.os.Bundle
 import android.util.Log
 import android.view.*
-import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
 import com.google.android.gms.location.*
@@ -32,23 +31,24 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
     private lateinit var binding: FragmentSelectLocationBinding
 
     private lateinit var map: GoogleMap
-    private lateinit var mapView: MapView
     private var marker: Marker? = null
+
     private var selectedPOI: PointOfInterest? = null
     private lateinit var fusedLocationClient: FusedLocationProviderClient
+
     private var reminderSelectedLocationStr: String = ""
     private var latitude = 0.0
     private var longitude = 0.0
+
     private lateinit var fragmentContext: Context
 
 
     companion object {
         private const val REQUEST_PERMISSION_LOCATION_CODE = 1
+        private val DEFAULT_LATITUDE = 43.785294
+        private val DEFAULT_LONGITUDE = -110.698560
     }
 
-    private fun getFusedLocationProviderClient(): FusedLocationProviderClient {
-        return LocationServices.getFusedLocationProviderClient(requireActivity())
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -61,17 +61,36 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
 
         setHasOptionsMenu(true)
         setDisplayHomeAsUpEnabled(true)
+
         fragmentContext = binding.saveButton.context
         fusedLocationClient = getFusedLocationProviderClient()
+
+        binding.saveButton.setOnClickListener {
+            onLocationSelected()
+        }
+
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         val mapView = childFragmentManager
             .findFragmentById(R.id.google_map) as SupportMapFragment
         mapView.getMapAsync(this)
-
-        onLocationSelected()
-        return binding.root
     }
 
+    private fun getFusedLocationProviderClient(): FusedLocationProviderClient {
+        return LocationServices.getFusedLocationProviderClient(requireActivity())
+    }
+
+    override fun onMapReady(googleMap: GoogleMap) {
+        map = googleMap
+        setMapStyle()
+        enableUserLocation()
+        setMapLongClick()
+        setPoiClick()
+    }
 
     private fun setMapStyle() {
         try {
@@ -142,18 +161,38 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
 
     @SuppressLint("MissingPermission")
     private fun enableUserLocation() {
-
         if (isPermissionGranted()) {
             map.isMyLocationEnabled = true
-            Toast.makeText(fragmentContext, "Location permission granted.", Toast.LENGTH_LONG)
-                .show()
+            getUserLocation()
         } else {
             ActivityCompat.requestPermissions(
                 requireActivity(),
                 arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
                 REQUEST_PERMISSION_LOCATION_CODE,
+            )
+        }
+    }
 
+    @SuppressLint("MissingPermission")
+    private fun getUserLocation() {
+        fusedLocationClient.lastLocation.addOnSuccessListener { lastKnownLocation ->
+            if (lastKnownLocation != null) {
+                map.moveCamera(
+                    CameraUpdateFactory.newLatLngZoom(
+                        LatLng(
+                            lastKnownLocation.latitude,
+                            lastKnownLocation.longitude
+                        ), 15f
+                    )
                 )
+            } else {
+                map.moveCamera(
+                    CameraUpdateFactory.newLatLngZoom(
+                        LatLng(DEFAULT_LATITUDE, DEFAULT_LONGITUDE),
+                        15f
+                    )
+                )
+            }
         }
     }
 
@@ -228,15 +267,6 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
         }
 
         else -> super.onOptionsItemSelected(item)
-    }
-
-
-    override fun onMapReady(googleMap: GoogleMap) {
-        map = googleMap
-        setMapStyle()
-        enableUserLocation()
-        setMapLongClick()
-        setPoiClick()
     }
 
 

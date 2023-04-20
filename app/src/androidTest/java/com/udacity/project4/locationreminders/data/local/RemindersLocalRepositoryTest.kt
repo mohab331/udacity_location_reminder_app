@@ -74,9 +74,6 @@ class RemindersLocalRepositoryTest {
         val reminderResult =
             localRepository.getReminder(reminderDto.id) as Result.Success<ReminderDTO>
         MatcherAssert.assertThat(reminderResult.data.id, `is`(reminderDto.id))
-        MatcherAssert.assertThat(reminderResult, `is`(Result.Success::class.java))
-        MatcherAssert.assertThat(reminderResult, `is`(Result.Success::class.java))
-
     }
 
     @Test

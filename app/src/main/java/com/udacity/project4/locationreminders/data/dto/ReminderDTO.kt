@@ -17,7 +17,6 @@ import java.util.UUID
  */
 
 
-
 @Entity(tableName = "reminders")
 data class ReminderDTO(
     @ColumnInfo(name = "title") var title: String?,

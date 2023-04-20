@@ -8,8 +8,7 @@ import com.udacity.project4.locationreminders.data.FakeDataSource
 import com.udacity.project4.locationreminders.data.dto.ReminderDTO
 import com.udacity.project4.locationreminders.getOrAwaitValue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.pauseDispatcher
-import kotlinx.coroutines.test.resumeDispatcher
+import kotlinx.coroutines.test.DelayController
 import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat
@@ -19,6 +18,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.koin.core.context.stopKoin
+import kotlin.coroutines.ContinuationInterceptor
 
 @RunWith(AndroidJUnit4::class)
 @ExperimentalCoroutinesApi
@@ -70,7 +70,7 @@ class RemindersListViewModelTest {
      */
     @Test
     fun load_data_success() = mainCoroutineRule.runBlockingTest {
-        mainCoroutineRule.pauseDispatcher()
+        (mainCoroutineRule.coroutineContext[ContinuationInterceptor]!! as DelayController).pauseDispatcher()
         dataSource.saveReminder(reminderDto)
 
         remindersListViewModel.loadReminders()
@@ -78,7 +78,7 @@ class RemindersListViewModelTest {
             remindersListViewModel.showLoading.getOrAwaitValue(),
             `is`(true)
         )
-        mainCoroutineRule.resumeDispatcher()
+        (mainCoroutineRule.coroutineContext[ContinuationInterceptor]!! as DelayController).resumeDispatcher()
 
         assertThat(
             remindersListViewModel.showLoading.getOrAwaitValue(),

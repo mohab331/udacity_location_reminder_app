@@ -9,8 +9,7 @@ import com.udacity.project4.locationreminders.reminderslist.ReminderDataItem
 import junit.framework.TestCase.assertFalse
 import junit.framework.TestCase.assertTrue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.pauseDispatcher
-import kotlinx.coroutines.test.resumeDispatcher
+import kotlinx.coroutines.test.DelayController
 import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.notNullValue
@@ -21,6 +20,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.koin.core.context.stopKoin
+import kotlin.coroutines.ContinuationInterceptor
 
 @ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4::class)
@@ -78,10 +78,10 @@ class SaveReminderViewModelTest {
 
     @Test
     fun save_valid_data_success() = runBlockingTest {
-        mainCoroutineRule.pauseDispatcher()
+        (mainCoroutineRule.coroutineContext[ContinuationInterceptor]!! as DelayController).pauseDispatcher()
         saveReminderViewModel.validateAndSaveReminder(reminderDto)
         assertThat(saveReminderViewModel.showLoading.value, `is`(true))
-        mainCoroutineRule.resumeDispatcher()
+        (mainCoroutineRule.coroutineContext[ContinuationInterceptor]!! as DelayController).resumeDispatcher()
         assertThat(saveReminderViewModel.showLoading.value, `is`(false))
     }
 }
