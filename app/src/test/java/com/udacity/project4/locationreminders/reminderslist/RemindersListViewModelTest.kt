@@ -41,7 +41,7 @@ class RemindersListViewModelTest {
     var mainCoroutineRule = MainCoroutineRule()
 
     @Before
-    fun setup() {
+    fun init() {
         dataSource = FakeDataSource()
         remindersListViewModel =
             RemindersListViewModel(ApplicationProvider.getApplicationContext(), dataSource)

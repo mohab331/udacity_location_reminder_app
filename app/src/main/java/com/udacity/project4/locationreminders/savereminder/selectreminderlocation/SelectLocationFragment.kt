@@ -40,7 +40,7 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
     private var latitude = 0.0
     private var longitude = 0.0
 
-    private lateinit var fragmentContext: Context
+   // private lateinit var fragmentContext: Context
 
 
     companion object {
@@ -62,7 +62,7 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
         setHasOptionsMenu(true)
         setDisplayHomeAsUpEnabled(true)
 
-        fragmentContext = binding.saveButton.context
+        //fragmentContext = binding.saveButton.context
         fusedLocationClient = getFusedLocationProviderClient()
 
         binding.saveButton.setOnClickListener {
@@ -97,7 +97,7 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
             val success = map.setMapStyle(
 
                 MapStyleOptions.loadRawResourceStyle(
-                    fragmentContext,
+                    requireContext(),
                     R.raw.map_style
                 )
 
@@ -153,7 +153,7 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
     private fun isPermissionGranted(): Boolean {
         return (
                 ActivityCompat.checkSelfPermission(
-                    fragmentContext,
+                    requireContext(),
                     Manifest.permission.ACCESS_FINE_LOCATION
                 )
                         == PackageManager.PERMISSION_GRANTED)

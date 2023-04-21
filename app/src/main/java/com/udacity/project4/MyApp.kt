@@ -35,7 +35,11 @@ class MyApp : Application() {
                     get() as ReminderDataSource
                 )
             }
-            single { RemindersLocalRepository(get()) }
+            single {
+                val dataSource: ReminderDataSource = RemindersLocalRepository(get())
+                dataSource // required cast
+            }
+            single { RemindersLocalRepository(get())  }
             single { LocalDB.createRemindersDao(this@MyApp) }
         }
 

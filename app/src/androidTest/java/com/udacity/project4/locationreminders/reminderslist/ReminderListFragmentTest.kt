@@ -54,7 +54,7 @@ class ReminderListFragmentTest :
 
 
     @Before
-    fun setUp() {
+    fun init() {
         stopKoin()
         appContext = ApplicationProvider.getApplicationContext()
         val myModule = module {

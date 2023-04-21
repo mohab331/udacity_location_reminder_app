@@ -43,7 +43,7 @@ class SaveReminderViewModelTest {
     val mainCoroutineRule = MainCoroutineRule()
 
     @Before
-    fun setup() {
+    fun init() {
         datasource = FakeDataSource()
         saveReminderViewModel =
             SaveReminderViewModel(ApplicationProvider.getApplicationContext(), datasource)
