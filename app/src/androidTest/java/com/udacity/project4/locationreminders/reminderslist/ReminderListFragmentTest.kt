@@ -123,7 +123,7 @@ class ReminderListFragmentTest :
     /**
      *  Add testing for the error messages.
      */
-  //  @Test
+    @Test
     fun check_to_error_messages() {
         launchFragmentInContainer<ReminderListFragment>(Bundle(), R.style.AppTheme)
         onView(withId(R.id.noDataTextView)).check(matches(isDisplayed()))
