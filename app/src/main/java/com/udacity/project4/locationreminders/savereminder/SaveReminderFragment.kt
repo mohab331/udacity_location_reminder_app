@@ -182,8 +182,11 @@ class SaveReminderFragment : BaseFragment() {
         locationSettingsResponseTask.addOnFailureListener { exception ->
             if (exception is ResolvableApiException && resolve) {
                 try {
-                    exception.startResolutionForResult(requireActivity(), REQUEST_TURN_DEVICE_LOCATION_ON)
-
+                    startIntentSenderForResult(
+                        exception.resolution.intentSender,
+                        REQUEST_TURN_DEVICE_LOCATION_ON,
+                        null, 0, 0, 0, null
+                    )
                 } catch (sendEx: IntentSender.SendIntentException) {
                     locationErrorSnackBar(sendEx.message)
                 }
@@ -200,6 +203,7 @@ class SaveReminderFragment : BaseFragment() {
             if (it.isSuccessful) {
                 setupGeofence()
             }
+
         }
     }
 
@@ -252,10 +256,6 @@ class SaveReminderFragment : BaseFragment() {
 
         geofencingClient.addGeofences(geofencingRequest, geofencePendingIntent).run {
             addOnSuccessListener {
-
-                Toast.makeText(requireActivity(), "Geofence added!!",
-                    Toast.LENGTH_SHORT)
-                    .show()
                 Log.d(TAG, "Geofence Added Successfully${geofence.requestId}")
                 _viewModel.saveReminder(reminderDataItem)
             }
