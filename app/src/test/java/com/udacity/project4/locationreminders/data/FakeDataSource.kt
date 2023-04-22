@@ -31,7 +31,7 @@ class FakeDataSource(var reminders: MutableList<ReminderDTO> = mutableListOf()) 
         if(retrievedReminder != null){
           return  Result.Success(retrievedReminder)
         }
-        return Result.Error("Reminder not found !")
+        return Result.Error("Reminder not found!")
     }
 
     override suspend fun deleteAllReminders() {
