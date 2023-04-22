@@ -5,7 +5,6 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.ContentValues.TAG
-import android.content.Context
 import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.os.Bundle
@@ -40,13 +39,12 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
     private var latitude = 0.0
     private var longitude = 0.0
 
-   // private lateinit var fragmentContext: Context
 
 
     companion object {
         private const val REQUEST_PERMISSION_LOCATION_CODE = 1
-        private val DEFAULT_LATITUDE = 43.785294
-        private val DEFAULT_LONGITUDE = -110.698560
+        private const val DEFAULT_LATITUDE = 43.785294
+        private const val DEFAULT_LONGITUDE = -110.698560
     }
 
 
@@ -62,7 +60,6 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
         setHasOptionsMenu(true)
         setDisplayHomeAsUpEnabled(true)
 
-        //fragmentContext = binding.saveButton.context
         fusedLocationClient = getFusedLocationProviderClient()
 
         binding.saveButton.setOnClickListener {
@@ -150,31 +147,13 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
         }
     }
 
-    private fun isPermissionGranted(): Boolean {
-        return (
-                ActivityCompat.checkSelfPermission(
-                    requireContext(),
-                    Manifest.permission.ACCESS_FINE_LOCATION
-                )
-                        == PackageManager.PERMISSION_GRANTED)
-    }
 
-    @SuppressLint("MissingPermission")
-    private fun enableUserLocation() {
-        if (isPermissionGranted()) {
-            map.isMyLocationEnabled = true
-            getUserLocation()
-        } else {
-            ActivityCompat.requestPermissions(
-                requireActivity(),
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                REQUEST_PERMISSION_LOCATION_CODE,
-            )
-        }
-    }
+
+
 
     @SuppressLint("MissingPermission")
     private fun getUserLocation() {
+        fusedLocationClient = getFusedLocationProviderClient()
         fusedLocationClient.lastLocation.addOnSuccessListener { lastKnownLocation ->
             if (lastKnownLocation != null) {
                 map.moveCamera(
@@ -186,6 +165,7 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
                     )
                 )
             } else {
+                Log.d(TAG, "getUserLocation: IN fail")
                 map.moveCamera(
                     CameraUpdateFactory.newLatLngZoom(
                         LatLng(DEFAULT_LATITUDE, DEFAULT_LONGITUDE),
@@ -196,13 +176,34 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
         }
     }
 
+    private fun isPermissionGranted(): Boolean {
+        return (
+                ActivityCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                )
+                        == PackageManager.PERMISSION_GRANTED)
+    }
+    @SuppressLint("MissingPermission")
+    private fun enableUserLocation() {
+        if (isPermissionGranted()) {
+            map.isMyLocationEnabled = true
+            getUserLocation()
+        } else {
+            requestPermissions(
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                REQUEST_PERMISSION_LOCATION_CODE,
+            )
+        }
+    }
+
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (grantResults.isNotEmpty() && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+        if (grantResults.isNotEmpty() && (grantResults.contains(PackageManager.PERMISSION_GRANTED))) {
             enableUserLocation()
         } else {
             showRationale()

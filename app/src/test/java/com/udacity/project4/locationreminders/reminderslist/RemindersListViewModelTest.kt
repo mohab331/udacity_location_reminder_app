@@ -89,6 +89,12 @@ class RemindersListViewModelTest {
         assertThat(remindersList[0].id, `is`(reminderDto.id))
     }
 
+    @Test
+    fun test_shouldReturnError() = mainCoroutineRule.runBlockingTest {
+        dataSource.setReturnError(true)
+        remindersListViewModel.loadReminders()
+        assertThat(remindersListViewModel.showSnackBar.getOrAwaitValue(), `is`("Test Exception"))
+    }
 
     /**
      * testing that list doesn't contain data
@@ -97,7 +103,6 @@ class RemindersListViewModelTest {
     fun empty_list() = mainCoroutineRule.runBlockingTest {
         dataSource.deleteAllReminders()
         remindersListViewModel.loadReminders()
-
         assertThat(remindersListViewModel.remindersList.getOrAwaitValue().isEmpty(), `is`(true))
     }
 

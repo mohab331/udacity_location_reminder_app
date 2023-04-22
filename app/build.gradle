@@ -123,6 +123,7 @@ dependencies {
     //Maps & Geofencing
     implementation "com.google.android.gms:play-services-location:$playServicesVersionLocation"
     implementation "com.google.android.gms:play-services-maps:$playServicesVersionMaps"
+    implementation "io.grpc:grpc-okhttp:1.32.2"
 
     //firebase
     implementation 'com.firebaseui:firebase-ui-auth:8.0.2'

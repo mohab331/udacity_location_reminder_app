@@ -11,6 +11,8 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.longClick
 import androidx.test.espresso.action.ViewActions.replaceText
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.RootMatchers
+import androidx.test.espresso.matcher.RootMatchers.withDecorView
 import androidx.test.espresso.matcher.ViewMatchers.*
 
 import com.udacity.project4.locationreminders.RemindersActivity
@@ -22,8 +24,10 @@ import com.udacity.project4.locationreminders.savereminder.SaveReminderViewModel
 import com.udacity.project4.util.DataBindingIdlingResource
 import com.udacity.project4.util.monitorActivity
 import com.udacity.project4.utils.EspressoIdlingResource
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runBlockingTest
+import org.hamcrest.Matchers
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -137,7 +141,21 @@ class RemindersActivityTest :
         onView(withText("title"))
             .check(matches(isDisplayed()))
         onView(withId(R.id.saveReminder)).perform(click())
+        onView(withText(R.string.reminder_saved))
+            .inRoot(withDecorView(Matchers.not(getActivity(activityScenario).window.decorView)))
+            .check(matches(isDisplayed()))
+
+
         activityScenario.close()
+    }
+
+
+    private fun getActivity(activityScenario: ActivityScenario<RemindersActivity>): Activity {
+        lateinit var activity: Activity
+        activityScenario.onActivity {
+            activity = it
+        }
+        return activity
     }
 
 }

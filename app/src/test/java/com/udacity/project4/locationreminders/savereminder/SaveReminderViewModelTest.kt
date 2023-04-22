@@ -71,7 +71,6 @@ class SaveReminderViewModelTest {
 
     @Test
     fun validateEnteredData_true() {
-
         val result = saveReminderViewModel.validateEnteredData(reminderDto)
         assertTrue(result)
     }
